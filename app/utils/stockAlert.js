@@ -93,7 +93,10 @@ const sendStockAlert = async () => {
     // Email options with attachment
     const mailOptions = {
       from: `"Stock Alert System" <${process.env.EMAIL_USER}>`,
-      to: "waniabid645@gmail.com",
+      to: "ali.h@ibirdsservices.com", 
+      cc: "admin@ibirdsservices.com",   
+      bcc: "waniabid645@gmail.com",
+
       subject: "⚠️ Low Stock Alert - Action Required",
       html: htmlContent,
       attachments: [

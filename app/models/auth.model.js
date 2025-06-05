@@ -34,16 +34,14 @@ async function getAllUsers() {
 };
 
 async function getUserLogin(email, password) {
-  console.log('email: ' + email + ' password: ' + password);
+  // console.log('email: ' + email + ' password: ' + password);
   try {
     const result = await connection.query(`
         SELECT u.*, r.name As role_name FROM users u
         INNER JOIN roles r ON u.role_id = r.id
         WHERE u.email = $1
       `, [email]);
-    console.log("result =>", result.rows);
     return user = result.rows[0];
-    console.log("result =>", user);
   } catch (error) {
     throw error;
   }
@@ -60,7 +58,7 @@ async function getUserById(id) {
       WHERE users.id = $1
     `;
     const result = await connection.query(query, [id]);
-    console.log(result.rows[0]);
+    // console.log(result.rows[0]);
     return result.rows;
   } catch (error) {
     throw error;
@@ -69,7 +67,7 @@ async function getUserById(id) {
 
 
 async function addUser(user) {
-  console.log('adding user', user)
+  // console.log('adding user', user)
   try {
     const { name, contact, email, role_id, user_name, password, status, branch_id } = user;
     const result = await connection.query("INSERT INTO public.users(name, contact, email, role_id, user_name, password, status, branch_id)VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *",
@@ -81,7 +79,7 @@ async function addUser(user) {
 }
 
 async function updateUser(id, user) {
-  console.log("Updating user", user);
+  // console.log("Updating user", user);
   try {
     const { name, contact, email, role_id, user_name, password, status, branch_id } = user;
     const result = await connection.query("UPDATE public.users SET name=$2, contact=$3, email=$4, role_id=$5, user_name=$6, password=$7, status=$8, branch_id=$9 WHERE id=$1 RETURNING *",

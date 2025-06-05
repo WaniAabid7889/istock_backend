@@ -3,7 +3,7 @@ const Auth = require("../models/auth.model.js");
 
 const fetchApi = async (req, res, next) => {
    const token = req.headers.authorization?.split(' ')[1];
-    console.log('token==>', token);
+    // console.log('token==>', token);
    
     if (!token) {
         return res.status(401).send({ errors: "Please authenticate" })

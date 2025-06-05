@@ -15,14 +15,12 @@ module.exports = function (app) {
         }
     });
 
-
     router.get('/:email/:password', async function (req, res) {
-        const email = req.params.email;
+        const email = req.params.email; 
         const password = req.params.password;
         console.log(email, password);
 
         const user = await Auth.getUserLogin(email);    
-        console.log('user=>', user);
         if (!user) {
             return res.status(400).json({ errors: "No user found", success: false });
         }
@@ -32,12 +30,11 @@ module.exports = function (app) {
             return res.status(400).json({ errors: "Invalid password", success: false });
         }
 
-        console.log('Role ID: ' + user.role_id);
         const permission = await Permission.getPermissionByRoleId(user.role_id);
-        console.log('Permission: ', permission);
+        // console.log('Permission: ', permission);
         
         const token = jwt.sign({user,permission}, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 });
-        console.log('token value :', token);
+        // console.log('token value :', token);
     
         //res.status(200).json({ token });
         
@@ -69,7 +66,7 @@ module.exports = function (app) {
         const email = req.params.email;
         const password = req.params.password;
         const user = await Auth.getUserLogin(email, password);
-        console.log('user', user);
+        // console.log('user', user);
         if (user) {
             res.status(200).json({ user, success: true });
         } else {
@@ -87,7 +84,7 @@ module.exports = function (app) {
             const hash = await bcrypt.hash(password, salt);
             user.password = hash;
             const result = await Auth.addUser(user);
-            console.log('result value',result);
+            // console.log('result value',result);
             if (result) {
                 res.status(200).json(result);
             } else {
@@ -105,7 +102,7 @@ module.exports = function (app) {
         const user = req.body;
         const userId = req.params.id;
         const result = await Auth.updateUser(userId, user);
-        console.log(result);
+        // console.log(result);
         if (result) {
             res.status(200).json({result,success:true});
         } else {
@@ -115,7 +112,7 @@ module.exports = function (app) {
 
     router.delete('/delete/:id', async function (req, res) {
         const userId = req.params.id;
-        console.log('Deleting user with id:', userId);
+        // console.log('Deleting user with id:', userId);
         const result = await Auth.deleteUser(userId)
         if (result) {
             res.status(200).json({ message: "User deleted successfully" });
