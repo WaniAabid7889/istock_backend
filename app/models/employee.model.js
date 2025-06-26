@@ -63,12 +63,17 @@ async function updateEmployee(id, employee) {
 }
 
 async function deleteEmployee(id) {
-    try {
-        const result = await connection.query(`DELETE FROM public.employee WHERE id = $1 RETURNING *`, [id]);
-        return result.rows[0];
-    } catch (error) {
-        throw error;
-    }
+  try {
+    const result = await db.query(
+      `DELETE FROM public.employees WHERE id = $1 RETURNING*`, [id]
+    );
+    // console.log("Delete result:", result.rows);  // Logging the result
+    // If the result is an empty array, that means no rows were deleted
+    return result.rows;  // An empty array means no employee was found to delete
+  } catch (error) {
+    console.error("Error during delete operation:", error);  // Log the full error
+    throw error;  // Propagate the error
+  }
 }
 
 module.exports = {

@@ -24,7 +24,7 @@ const fetchApi = async (req, res, next) => {
         }
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(401).send({ errors: "Please authenticate" })
     }
 } 

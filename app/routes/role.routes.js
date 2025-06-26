@@ -3,7 +3,6 @@ const Role = require('../models/role.model.js');
 
 module.exports = function(app) {
     var router = express.Router();
-    console.log('role routes', router)
     router.get('/', async function(req, res) {
         const role = await Role.getRole();
         console.log(role)

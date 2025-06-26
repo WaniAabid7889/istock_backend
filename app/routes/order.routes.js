@@ -76,17 +76,25 @@ module.exports = function (app) {
         }
     });
 
-    router.delete('/:id', async function (req, res) {
-        const orderId = req.params.id;
-        const result = await Order.deleteOrder(orderId);
-        if (result) {
-            res.status(200).send(result);
-        } else {
-            res.status(404).send({
-                message: 'Error deleting order'
-            });
+    router.delete('/delete/:id', async (req, res) => {
+    const orderId = req.params.id;
+    console.log('orderId', orderId);
+        try {
+            // 1. Remove related line items
+            await OrderLineItem.deleteOrderLineItem("", orderId);
+            // 2. Then delete the order
+            const result = await Order.deleteOrder(orderId);
+
+            if (result) {
+            res.status(200).json({success:true, message:'order deleting successfully'});
+            } else {
+            res.status(404).send({ message: 'Error deleting order' });
+            }
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ success:false, message: 'Internal server error' });
         }
-    })
+        });
 
     app.use('/order', router);
 }

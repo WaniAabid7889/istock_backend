@@ -57,5 +57,14 @@ module.exports = function(app) {
         }
     });
 
+     router.delete('/delete/:id', async (req,res) => {
+        const id = req.params.id;
+        console.log('issueId',id);
+        const issue = await Issue.removeIssue(id);
+        res.status(200).json({result : issue});
+    });
+
+    
+
     app.use('/issue', router);
 };

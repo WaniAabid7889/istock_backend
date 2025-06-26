@@ -19,7 +19,7 @@ module.exports = function (app) {
 
     router.get('/:id', async (req, res) => {
         const orderLineItemId = req.params.id;
-        const result = await OrderLineItem.getOrderLineItemById(orderLineItemId);
+        const result = await OrderLineItem.getOrderLineItemById(orderLineItemId,"");
         if (result) {
             res.status(200).json(result);
         } else {

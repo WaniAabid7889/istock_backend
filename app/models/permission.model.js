@@ -1,5 +1,4 @@
 const connection = require('../config/db.connect.js');
-console.log(connection)
 
 async function getPermission() {
     try {
@@ -61,16 +60,16 @@ async function updatePermission(id, permission) {
     }
   }
 
-// async function deletePermission(id) {
-//     try {
-//         const result = await connection.query(`
-//             Select * from public.permissions where $1    
-//         `, [id]);
-//         return result.rows[0];
-//     } catch (error) {
-//         throw error;
-//     }
-// }
+async function deletePermission(id) {
+    try {
+        const result = await connection.query(`
+            Select * from public.permissions where $1    
+        `, [id]);
+        return result.rows[0];
+    } catch (error) {
+        throw error;
+    }
+}
 
 async function getPermissionByRole(roleName) {
     try {
@@ -155,6 +154,7 @@ module.exports = {
     getPermissionById,
     addPermission,
     updatePermission,
+    deletePermission,
     getPermissionByRole,
     getPermissionByRoleId,
     getPermissionByRoleIdAndModuleId,

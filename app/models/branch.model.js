@@ -1,5 +1,5 @@
 const connection   =  require('../config/db.connect.js'); 
-console.log(connection)
+
 
 
 async function getBranch(){

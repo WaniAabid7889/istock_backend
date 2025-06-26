@@ -45,7 +45,8 @@ async function addOrderLineItems(orderLineItems,orderId) {
             const productData = await Product.getProductById(productId);
             const currentStock = productData?.[0]?.total_buy_quantity || 0;
 
-            const newStock = currentStock + quantityToAdd;
+            const newStock = parseFloat(currentStock) + parseFloat(quantityToAdd);
+            console.log('newStock',newStock);
 
             await Product.updateProductStock(productId, {
                 total_buy_quantity: newStock,

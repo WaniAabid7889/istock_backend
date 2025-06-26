@@ -1,6 +1,6 @@
 const express = require("express");
 const Product = require("../models/product.model.js");
-
+const db = require("../config/db.connect.js");
 module.exports = function (app) {
   var router = express.Router();
 
@@ -87,7 +87,18 @@ module.exports = function (app) {
     try {
       const product = req.body;
       const productId = req.params.id;
-      const onlyStockUpdate = Object.keys(product).length === 2 && "total_buy_quantity" in product && "available_stock" in product;
+      console.log('updateproductStock=>',productId,'  ',product);
+
+      const requiredFields = ["total_buy_quantity", "available_stock"];
+      const hasRequiredFields = requiredFields.every(field => field in product);
+
+      console.log('hasRequiredFields',hasRequiredFields)
+      
+      const onlyStockUpdate = Object.keys(product).length === 1 || Object.keys(product).length === 2;
+
+      // const onlyStockUpdate = hasRequiredFields && hasOneOrTwoFields;
+
+      console.log('onlyStockUpdate=>',onlyStockUpdate);
 
       if (onlyStockUpdate) {
         const result = await Product.updateProductStock(productId, product);
@@ -111,19 +122,27 @@ module.exports = function (app) {
   });
 
   router.delete("/delete/:id", async function (req, res) {
-    try {
-      const productId = req.params.id;
-      const result = await Product.deleteProduct(productId);
-      if (result) {
-        res.status(200).json({ message: "Product deleted successfully" });
-      } else {
-        res.status(400).json({ message: "Error deleting product" });
-      }
-    } catch (error) {
-      console.error("Error:", error.message);
-      res.status(500).send({ message: "Internal Server Error" });
+  const productId = req.params.id;
+  
+  try {
+    // Option 1: Manually delete related issues before deleting product
+    let result = await db.query("UPDATE Products SET status = 'inactive' WHERE id = $1", [productId]);
+    // await Issue.issueDeletedById(productId);
+    
+    
+    // Now delete the product
+    // const result = await Product.deleteProduct(productId);
+
+    if (result) {
+      res.status(200).json({ message: "Product deleted successfully" });
+    } else {
+      res.status(400).json({ message: "Error deleting product" });
     }
-  });
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
 
   app.use('/product',router);
 };

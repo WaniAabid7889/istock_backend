@@ -48,14 +48,25 @@ module.exports = function(app) {
         }
     });
 
-    router.delete('/delete/:id', async (req, res) => {
+     router.delete("/delete/:id", async (req, res) => {
+        const employeeId = req.params.id;
+        // console.log(`Attempting to delete employee with ID: ${employeeId}`);
+
         try {
-            const result = await Employee.deleteEmployee(req.params.id);
-            res.status(200).json(result);
+            // Delete the employee record from the database
+            const result = await Employee.deleteEmployee(employeeId);
+
+            if (result.length > 0) {  // Checking if any row was returned
+            res.status(200).json({ message: "Employee deleted successfully" });
+            } else {
+            res.status(400).json({ message: "Error deleting employee: Employee not found" });
+            }
         } catch (error) {
-            res.status(500).json({ errors: "Error deleting employee" });
+            console.error("Error deleting employee:", error);
+            res.status(500).json({ message: "Internal Server Error", error: error.message });
         }
     });
+
 
     app.use('/employee', router);
 };

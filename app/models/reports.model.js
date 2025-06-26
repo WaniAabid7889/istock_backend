@@ -1,96 +1,92 @@
 let connection = require("../config/db.connect");
 const { getOpeningAndClosingStock } = require("../utils/stockUtils.js");
+const { differenceInMonths, addMonths, format, startOfMonth, endOfMonth } = require('date-fns');
+
+
 async function getIssuedProdQuantityMonthly(startDate, endDate) {
-  const productResult = await connection.query(`
-    SELECT DISTINCT p.name AS product_name 
-    FROM issues i 
-    INNER JOIN products p ON i.product_id = p.id
-    WHERE i.issue_date BETWEEN $1 AND $2
-  `,
-    [startDate, endDate]
-  );
+  try {
+    const productResult = await connection.query(`
+      SELECT DISTINCT p.name AS product_name, p.id AS product_id 
+      FROM issues i 
+      INNER JOIN products p ON i.product_id = p.id
+      WHERE i.issue_date BETWEEN $1 AND $2
+    `, [startDate, endDate]);
 
-  const products = productResult.rows.map((row) => row.product_name);
+    const products = productResult.rows;
+    const finalResult = [];
 
-  const finalResult = [];
-  for (const product of products) {
-    const dailyResult = await connection.query(`
-    SELECT 
-      EXTRACT(DAY FROM i.issue_date)::int AS day,
-      SUM(i.quantity)::int AS total,
-      e.name AS employee_name,
-      u.name AS issued_by
-    FROM issues i
-    INNER JOIN products p ON i.product_id = p.id
-    LEFT JOIN employees e ON i.employee_id = e.id
-    LEFT JOIN users u ON i.user_id = u.id
-    WHERE p.name = $1 AND i.issue_date BETWEEN $2 AND $3
-    GROUP BY day, e.name, u.name
-    ORDER BY day
-  `,
-      [product, startDate, endDate]
-    );
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const monthCount = differenceInMonths(end, start) + 1;
 
-    console.log("dailyResult =>", dailyResult.rows);
+    for (const { product_name, product_id } of products) {
+      let carriedStock = null;
+      let previousBuyQty = null;
 
-    const dailyMap = {};
-    const employeeNames = new Set();
-    const issuedBys = new Set();
+      for (let m = 0; m < monthCount; m++) {
+        const monthStart = startOfMonth(addMonths(start, m));
+        const monthEnd = endOfMonth(monthStart);
 
-    // Sum quantity by day
-    dailyResult.rows.forEach((row) => {
-      dailyMap[row.day] = (dailyMap[row.day] || 0) + row.total;
+        // Daily issue breakdown
+        const dailyResult = await connection.query(`
+          SELECT 
+            EXTRACT(DAY FROM i.issue_date)::int AS day,
+            SUM(i.quantity)::int AS total,
+            e.name AS employee_name,
+            u.name AS issued_by
+          FROM issues i
+          INNER JOIN products p ON i.product_id = p.id
+          LEFT JOIN employees e ON i.employee_id = e.id
+          LEFT JOIN users u ON i.user_id = u.id
+          WHERE p.id = $1 AND i.issue_date BETWEEN $2 AND $3
+          GROUP BY day, e.name, u.name
+          ORDER BY day
+        `, [product_id, monthStart, monthEnd]);
 
-      if (row.employee_name) employeeNames.add(row.employee_name);
-      if (row.issued_by) issuedBys.add(row.issued_by);
-    });
+        const dailyMap = {};
+        const employeeNames = new Set();
+        const issuedBys = new Set();
 
-    console.log("dailyMap =>", dailyMap);
+        dailyResult.rows.forEach(row => {
+          dailyMap[row.day] = (dailyMap[row.day] || 0) + row.total;
+          if (row.employee_name) employeeNames.add(row.employee_name);
+          if (row.issued_by) issuedBys.add(row.issued_by);
+        });
 
-    // Build full daily array with summed totals
-    const daysInMonth = new Date(
-      startDate.split("-")[0],
-      startDate.split("-")[1],
-      0
-    ).getDate();
-    const dailyArray = [];
-    for (let i = 1; i <= daysInMonth; i++) {
-      dailyArray.push(dailyMap[i] || 0);
+        const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+        const dailyArray = Array.from({ length: daysInMonth }, (_, i) => dailyMap[i + 1] || 0);
+
+        const stock = await getOpeningAndClosingStock(
+          product_id,
+          format(monthStart, 'yyyy-MM-dd'),
+          format(monthEnd, 'yyyy-MM-dd'),
+          carriedStock,
+          previousBuyQty
+        );
+
+        // Update carryover values
+        carriedStock = stock.closingStock;
+        previousBuyQty = stock.totalBuyQtyThisMonth;
+
+        finalResult.push({
+          product: product_name,
+          month: format(monthStart, 'yyyy-MM'),
+          opening_stock: stock.openingStock,
+          daily: dailyArray,
+          closing_stock: stock.closingStock,
+          employee_name: Array.from(employeeNames).join(", ") || "N/A",
+          issued_by: Array.from(issuedBys).join(", ") || "N/A",
+        });
+      }
     }
 
-    console.log("dailyArray =>", dailyArray);
-
-    const productRow = await connection.query(
-      `SELECT id FROM products WHERE name = $1 LIMIT 1`,
-      [product]
-    );
-
-    const productId = productRow.rows[0]?.id;
-
-    let opening = 0;
-    let closing = 0;
-    if (productId) {
-      const stock = await getOpeningAndClosingStock(
-        productId,
-        startDate,
-        endDate
-      );
-      opening = stock.openingStock;
-      closing = stock.closingStock;
-    }
-
-    finalResult.push({
-      product,
-      opening_stock: opening,
-      daily: dailyArray,
-      closing_stock: closing,
-      employee_name: Array.from(employeeNames).join(", ") || "N/A",
-      issued_by: Array.from(issuedBys).join(", ") || "N/A",
-    });
+    return finalResult;
+  } catch (error) {
+    console.error('Error in getIssuedProdQuantityMonthly:', error);
+    throw error;
   }
-
-  return finalResult;
 }
+
 
 async function getIssuedProdQuantityYearly(startDate, endDate) {
   const productResult = await connection.query(

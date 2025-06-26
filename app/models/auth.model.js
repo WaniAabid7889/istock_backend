@@ -1,6 +1,4 @@
 const connection = require("../config/db.connect.js"); //when we use (../) it means back one folder 
-console.log(connection);
-
 
 //let schema  = 'public';
 
@@ -92,9 +90,9 @@ async function updateUser(id, user) {
 
 async function deleteUser(id) {
   try {
-    console.log(id);
+    // console.log(id);
     const result = await connection.query("DELETE FROM public.users WHERE id=$1 RETURNING *", [id]);
-    console.log(result);
+    // console.log(result);
     return result.rows[0];
   } catch (error) {
     throw error;

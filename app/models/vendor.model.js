@@ -18,7 +18,7 @@ async function getVendorById(id) {
             SELECT 
             vendor.*, branch.name AS branch_name 
             from vendors vendor inner join branches branch on vendor.branch_id = branch.id WHERE vendor.id=$1
-            ORDER BY branch.created_at DESC
+            ORDER BY vendor.created_at DESC
             `,
             [id]);
         return result.rows;

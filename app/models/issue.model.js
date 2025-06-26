@@ -59,14 +59,15 @@ async function addIssue(issue){
     }
 };
 
-async function removeIssue(){
+async function removeIssue(id){
     try{
-        const result = await connection.query(`DELETE FROM public.issues`);
+        const result = await connection.query(`DELETE FROM public.issues where id='${id}'`);
         return result.rows;
     }catch(error){
         throw error;
     }
 };
+
 
 async function updateIssue(id, issue){
     console.log(id,issue);

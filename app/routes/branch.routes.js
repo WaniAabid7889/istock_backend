@@ -65,16 +65,22 @@ module.exports = function(app){
         }
     });
 
-    router.delete('/delete/:id', async function(req, res){
-        const branchId = req.params.id;
-        console.log('Deleting branch with id:', branchId);
-        const result = await Branch.deleteBranch(branchId)
-        if(result){
-            res.status(200).json({message: "Branch deleted successfully"});
-        }else{
-            res.status(400).json({errors: "Error deleting branch"});
+    router.delete("/delete/:id", async (req, res) => {
+    const branchId = req.params.id;
+        try {
+            const result = await Branch.deleteBranch(branchId);
+
+            if (result.length > 0) { 
+            res.status(200).json({ message: "Branch deleted successfully" });
+            } else {
+            res.status(400).json({ message: "Error deleting branch" });
+            }
+        } catch (error) {
+            console.error("Error deleting branch:", error);
+            res.status(500).json({ message: "Internal Server Error", error: error.message });
         }
     });
+    
     app.use("/branch", router);
 };
 
