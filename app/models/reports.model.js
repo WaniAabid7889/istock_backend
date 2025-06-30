@@ -171,7 +171,7 @@ async function InventoryReport(year) {
   try {
     const result = await connection.query(
       `
-      SELECT 
+     SELECT 
         p.id,
         p.name,
         p.total_buy_quantity,
@@ -181,7 +181,7 @@ async function InventoryReport(year) {
         COALESCE(SUM(CASE WHEN EXTRACT(YEAR FROM i.issue_date) = $1 - 1 THEN i.quantity ELSE 0 END), 0) AS issued_last_year
       FROM products p
       LEFT JOIN issues i ON p.id = i.product_id
-      GROUP BY p.id
+      GROUP BY p.id, p.name, p.total_buy_quantity, p.total_issue_quantity
       ORDER BY p.name ASC;
     `,
       [year]

@@ -52,7 +52,7 @@ module.exports = function(app) {
         }
     });
 
-    router.delete('/:id', async function(req, res) {
+    router.delete('/delete/:id', async function(req, res) {
         const vendorId = req.params.id;
         const result = await Vendor.deleteVendor(vendorId);
         if (result) {
