@@ -2,7 +2,7 @@ const connection = require('../config/db.connect');
 
 async function getReturn() {
     try{
-        console.log('Getting returns');
+        // console.log('Getting returns');
         const result = await connection.query('SELECT * FROM returns');
         return result.rows;
     }catch(err){
@@ -10,7 +10,7 @@ async function getReturn() {
     }
 }
 async function getReturnAll() {
-    console.log('Getting all returns');
+    // console.log('Getting all returns');
     try{
             //  select returns.*, products.name As product_name,orders.order_number,issues.issue_date from returns 
 	   		//  inner join products on returns.product_id = products.id
@@ -20,7 +20,7 @@ async function getReturnAll() {
 	   		inner join products on returns.product_id = products.id
             inner join issues on returns.issue_id = issues.id
             `);
-            console.log(result);
+            // console.log(result);
         return result.rows;
     }catch(error){
         throw error;
@@ -28,7 +28,7 @@ async function getReturnAll() {
 }
 
 async function getReturnByIssueId(id) {
-    console.log('Getting return by issue id', id);
+    // console.log('Getting return by issue id', id);
     try {
         const result = await connection.query(`
             SELECT returns.*,
@@ -87,13 +87,13 @@ async function getReturnData(id, field = 'issue_id') {
 
 
 async function addReturn(returnObj) {
-    console.log('returnObj',returnObj);
+    // console.log('returnObj',returnObj);
     try {
         const { product_id, quantity, return_date, order_id, issue_id} = returnObj;
-        console.log(product_id);
+        // console.log(product_id);
         const result = await connection.query(`INSERT INTO returns (product_id, quantity, return_date, order_id, issue_id)
             VALUES ($1, $2, $3, $4, $5) RETURNING *`, [product_id, quantity, return_date, order_id || null , issue_id || null]);
-        console.log(result);
+        // console.log(result);
         return result.rows[0];
     } catch (error) {
         throw error;

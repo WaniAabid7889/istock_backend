@@ -16,14 +16,14 @@ async function getOpeningAndClosingStock(productId, startDate, endDate, carriedS
   const start = new Date(startDate);
 
   let openingStock = 0;
-  console.log(currentBuyQty,'',productCreatedAt,'',start);
-  console.log('carriedStock',carriedStock,'previousByQty',previousBuyQty);
+  // console.log(currentBuyQty,'',productCreatedAt,'',start);
+  // console.log('carriedStock',carriedStock,'previousByQty',previousBuyQty);
   
   if (carriedStock !== null && previousBuyQty !== null) {
     // New stock added this month
     const newStockAdded = currentBuyQty - previousBuyQty;
     openingStock = carriedStock + newStockAdded;
-    console.log(openingStock);
+    // console.log(openingStock);
     
   } else {
   
@@ -46,10 +46,10 @@ async function getOpeningAndClosingStock(productId, startDate, endDate, carriedS
   `, [productId, startDate, endDate]);
 
   const issuedThisPeriod = parseInt(periodIssues.rows[0].total);
-  console.log(openingStock,'',issuedThisPeriod);
+  // console.log(openingStock,'',issuedThisPeriod);
   
   const closingStock = openingStock - issuedThisPeriod; 
-  console.log('closingStock',closingStock);
+  // console.log('closingStock',closingStock);
   
 
   return {

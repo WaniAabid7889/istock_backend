@@ -41,7 +41,7 @@ async function getProductById(productId) {
             WHERE p.id = $1
         `;
     const result = await connection.query(query, [productId]);
-    console.log(result.rows[0]);
+    // console.log(result.rows[0]);
     return result.rows;
   } catch (error) {
     throw error;
@@ -49,7 +49,7 @@ async function getProductById(productId) {
 }
 
 async function addProduct(product) {
-  console.log("product =>", product);
+  // console.log("product =>", product);
 
   // Helper function to safely parse numbers
   function safeParseNumber(value) {
@@ -66,7 +66,7 @@ async function addProduct(product) {
   const available_stock  = total_buy_quantity;
   
 
-  // ✅ 1. Validation happens BEFORE any DB insert
+  //  1. Validation happens BEFORE any DB insert
   if ((min_quantity && !max_quantity) || (!min_quantity && max_quantity)) {
     throw new Error("Both min_quantity and max_quantity must be provided if one is filled.");
   }
@@ -76,14 +76,14 @@ async function addProduct(product) {
       throw new Error("total_buy_quantity is required when min and max are set.");
     }
 
-    console.log(total_buy_quantity,'',min_quantity,' ',max_quantity);
-    // ✅ Corrected validation logic here
+    // console.log(total_buy_quantity,'',min_quantity,' ',max_quantity);
+    //  Corrected validation logic here
     if (!(total_buy_quantity >= min_quantity && total_buy_quantity <= max_quantity)) {
       throw new Error(`total_buy_quantity (${total_buy_quantity}) must be between min_quantity (${min_quantity}) and max_quantity (${max_quantity}).`);
     }
   }
 
-  // ✅ 2. Only insert if validation passed
+  //  2. Only insert if validation passed
   try {
     const result = await connection.query(`
       INSERT INTO public.products(
@@ -118,7 +118,7 @@ async function addProduct(product) {
 
 
 async function updateProductStock(id, product) {
-  console.log("Updating productStock", id, product);
+  // console.log("Updating productStock", id, product);
   try {
     let query = `UPDATE public.products SET `;
     let values = [];
@@ -147,8 +147,8 @@ async function updateProductStock(id, product) {
     query += ` WHERE id = $${index} RETURNING *`;
     values.push(id);
 
-    console.log("QueryData", query);
-    console.log("ValuesData", values);
+    // console.log("QueryData", query);
+    // console.log("ValuesData", values);
 
     const result = await connection.query(query, values);
     return result.rows;
@@ -158,7 +158,7 @@ async function updateProductStock(id, product) {
 }
 
 async function updateProduct(id, product) {
-  console.log("productData=>", id, product);
+  // console.log("productData=>", id, product);
   const {total_issue_quantity, total_buy_quantity, min_quantity, max_quantity, measurement_units } = product;
   
   const parsedValues = {
@@ -169,7 +169,7 @@ async function updateProduct(id, product) {
     measurement_unit: measurement_units || null,
   };
 
-  console.log('parsedValues',parsedValues);
+  // console.log('parsedValues',parsedValues);
 
   if (parsedValues.min_quantity !== 0 && parsedValues.total_buy_quantity !== 0 && (parsedValues.total_buy_quantity < parsedValues.min_quantity ||
       parsedValues.total_buy_quantity > parsedValues.max_quantity)) {

@@ -42,7 +42,7 @@ async function updateProductCategory(id, product_category){
 
 async function deleteProductCategory(id){
     try{
-        console.log(id);
+        // console.log(id);
         const result = await connection.query(`DELETE FROM public.product_category WHERE id =$1 RETURNING *`, [id]);
         return result.rows;
     }catch(error){

@@ -12,7 +12,7 @@ async function getVendor() {
 };
 
 async function getVendorById(id) {
-    console.log('Getting vendor by id', id)
+    // console.log('Getting vendor by id', id)
     try {
         const result = await connection.query(` 
             SELECT 
@@ -38,7 +38,7 @@ async function addVendor(vendor) {
 }
 
 async function updateVendor(id, vendor) {
-    console.log('Updating vendor', id, vendor)
+    // console.log('Updating vendor', id, vendor)
     try {
         const result = await connection.query(`UPDATE public.vendors SET name=$1, gst_no=$2, mobile=$3, status=$4, address=$5, city=$6, state=$7, branch_id=$8 WHERE id=$9 RETURNING *`,
             [vendor.name, vendor.gst_no, vendor.mobile, vendor.status, vendor.address, vendor.city, vendor.state, vendor.branch_id, id]);

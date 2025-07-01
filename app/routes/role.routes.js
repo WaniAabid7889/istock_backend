@@ -3,9 +3,10 @@ const Role = require('../models/role.model.js');
 
 module.exports = function(app) {
     var router = express.Router();
+    // console.log('role routes', router)
     router.get('/', async function(req, res) {
         const role = await Role.getRole();
-        console.log(role)
+        // console.log(role)
         
         if (role) {
             res.status(200).json(role);
@@ -26,7 +27,7 @@ module.exports = function(app) {
 
     router.post('/', async function(req, res) {
         const role = req.body;
-        console.warn(role);
+        // console.warn(role);
         const result = await Role.addRole(role);
         if (result) {
             res.status(200).json(result);
@@ -38,7 +39,11 @@ module.exports = function(app) {
     router.put('/update/:id', async function(req, res) {
         const role = req.body;
         const roleId = req.params.id;
+        // console.log('update role data =>',role,'role_id',roleId);
+        
         const result = await Role.updateRole(roleId, role);
+        // console.log('role  =>',result);
+        
         if (result) {
             res.status(200).json(result);
         } else {

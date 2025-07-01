@@ -44,9 +44,9 @@ async function getIssueById(id) {
 }
 
 async function addIssue(issue){
-    console.log('issued',issue)
+    // console.log('issued',issue)
         const quantity = issue.quantity === "" ? null : parseInt(issue.quantity, 10);
-        console.log(quantity);
+        // console.log(quantity);
     //  const total_buy_quantity = product.total_buy_quantity === "" ? null : parseInt(product.total_buy_quantity, 10);
     try{
 
@@ -70,7 +70,7 @@ async function removeIssue(id){
 
 
 async function updateIssue(id, issue){
-    console.log(id,issue);
+    // console.log(id,issue);
     try{
         const result = await connection.query(`UPDATE public.issues SET user_id=$1, product_id=$2,quantity=$3, issue_date=$4,status=$5, description=$6, branch_id=$7,employee_id=$8 WHERE id=$9 RETURNING *`,
          [issue.user_id, issue.product_id, issue.quantity, issue.issue_date,issue.status, issue.description, issue.branch_id, issue.employee_id, id]);

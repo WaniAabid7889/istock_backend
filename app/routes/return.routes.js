@@ -33,7 +33,7 @@ module.exports = function(app) {
     router.post('/', async function(req, res) {
         try {
             const result = await Return.addReturn(req.body);
-            console.log('result=>',result);
+            // console.log('result=>',result);
             if(result){
                 res.status(201).json({success : true, message : "Return Added Successfully" ,result});
             } else {

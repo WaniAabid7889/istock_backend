@@ -19,7 +19,7 @@ async function getEmployeeById(id) {
 }
 
 async function addEmployee(employee) {
-     console.log('Employee Data ',employee);
+    //  console.log('Employee Data ',employee);
     try {
         const query = `
             INSERT INTO public.employees (name, department, status)
@@ -31,7 +31,7 @@ async function addEmployee(employee) {
             employee.status || 'Active'
         ];
         const result = await db.query(query, values);
-        console.log(result);
+        // console.log(result);
         return result.rows;
     } catch (error) {
         throw error;
@@ -39,7 +39,7 @@ async function addEmployee(employee) {
 }
 
 async function updateEmployee(id, employee) {
-    console.log('employee update =>', id,"  ",employee)
+    // console.log('employee update =>', id,"  ",employee)
     try {
         const query = `
             UPDATE public.employees

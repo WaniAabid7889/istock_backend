@@ -29,7 +29,7 @@ module.exports = function(app) {
 
     router.post('/', async function(req, res) {
         const issue = await Issue.addIssue(req.body);
-        console.log('issue data ',issue);
+        // console.log('issue data ',issue);
         if(!issue){
             res.status(400).json({errors : "No data"});
         }
@@ -38,7 +38,7 @@ module.exports = function(app) {
 
     router.put('/updateQuantity/:id', async function(req, res) {
         const issueId = req.params.id;
-        console.log('issueId', issueId, req.body);
+        // console.log('issueId', issueId, req.body);
         const issue = await Issue.updateIssueQuantity(issueId, req.body);
         if(issue){
             res.status(200).json(issue);
@@ -59,12 +59,12 @@ module.exports = function(app) {
 
      router.delete('/delete/:id', async (req,res) => {
         const id = req.params.id;
-        console.log('issueId',id);
+        // console.log('issueId',id);
         const issue = await Issue.removeIssue(id);
         res.status(200).json({result : issue});
     });
 
-    
+
 
     app.use('/issue', router);
 };

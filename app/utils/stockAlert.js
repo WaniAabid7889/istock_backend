@@ -29,7 +29,7 @@ const sendStockAlert = async () => {
     const lowStockProducts = result.rows;
 
     if (lowStockProducts.length === 0) {
-      console.log("No low stock products found.");
+      // console.log("No low stock products found.");
       return;
     }
 

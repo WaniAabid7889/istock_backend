@@ -28,7 +28,7 @@ async function addModule(module){
 }
 
 async function updateModule(id, module){
-    console.log('module updated')
+    // console.log('module updated')
     try{
         const result = await connection.query(`UPDATE public.modules SET name=$2,status=$3 WHERE id=$1 RETURNING *`,[id,module.name,module.status]);
         return result.rows[0];

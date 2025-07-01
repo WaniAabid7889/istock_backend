@@ -36,7 +36,7 @@ async function addPermission(permission) {
             RETURNING *;
         `, [permission.status, permission.edit, permission.del, permission.add, permission.role_id, permission.view, permission.module_id]);
 
-        console.log(result);
+        // console.log(result);
         return result.rows[0];
     } catch (error) {
         console.error('Error adding permission', error);

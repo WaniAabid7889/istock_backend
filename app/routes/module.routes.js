@@ -42,7 +42,7 @@ module.exports = function (app) {
     router.put('/update/:id', async function (req, res){
         const module = req.body;
         const moduleId = req.params.id;
-        console.log('module =>',module)
+        // console.log('module =>',module)
         const result = await Module.updateModule(moduleId, module);
         if(result){
             res.status(200).send(result);
@@ -53,7 +53,7 @@ module.exports = function (app) {
         }
     });
 
-    router.delete('/:id', async function (req, res){
+    router.delete('/delete/:id', async function (req, res){
         const moduleId = req.params.id;
         const result = await Module.deleteModule(moduleId);
         if(result){

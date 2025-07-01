@@ -31,7 +31,7 @@ async function addRole(role){
 async function updateRole(id, role){
     try{
     
-        console.log("=>",id,role);
+        // console.log("=>",id,role);
         const result = await connection.query(`UPDATE public.roles SET name=$1 WHERE id=$2 RETURNING *`, [role.name, id]);
         return result.rows;
     }catch(error){

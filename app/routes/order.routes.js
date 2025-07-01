@@ -41,7 +41,7 @@ module.exports = function (app) {
 
     router.post('/', async function (req, res) {
         const order = req.body;
-        console.log('order=>',order);
+        // console.log('order=>',order);
         try {
             const result = await Order.addOrder(order);
             // console.log('orderId',result[0].id);
@@ -78,7 +78,7 @@ module.exports = function (app) {
 
     router.delete('/delete/:id', async (req, res) => {
     const orderId = req.params.id;
-    console.log('orderId', orderId);
+    // console.log('orderId', orderId);
         try {
             // 1. Remove related line items
             await OrderLineItem.deleteOrderLineItem("", orderId);

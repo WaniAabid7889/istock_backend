@@ -18,7 +18,7 @@ module.exports = function (app) {
     router.get('/:email/:password', async function (req, res) {
         const email = req.params.email; 
         const password = req.params.password;
-        console.log(email, password);
+        // console.log(email, password);
 
         const user = await Auth.getUserLogin(email);    
         if (!user) {
@@ -54,7 +54,7 @@ module.exports = function (app) {
     router.get('/:id', async function (req, res) {
         const userId = req.params.id;
         const user = await Auth.getUserById(userId);
-        console.log(user);
+        // console.log(user);
         if (user) {
             res.status(200).json(user);
         } else {
@@ -76,9 +76,8 @@ module.exports = function (app) {
 
     router.post('/', async function (req, res) {
         const user = req.body;
-        console.log(user);
+        // console.log(user);
         try {
-
             const { username, password } = req.body;
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password, salt);
@@ -92,7 +91,7 @@ module.exports = function (app) {
             }
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(400).json({ errors: "Error saving user",success:false });
         }
 
@@ -101,8 +100,11 @@ module.exports = function (app) {
     router.put('/update/:id', async function (req, res) {
         const user = req.body;
         const userId = req.params.id;
+        const { password } = req.body;
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        user.password = hash;
         const result = await Auth.updateUser(userId, user);
-        // console.log(result);
         if (result) {
             res.status(200).json({result,success:true});
         } else {

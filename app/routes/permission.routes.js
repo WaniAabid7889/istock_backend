@@ -7,7 +7,7 @@ module.exports = function (app) {
 
     router.get('/', async function (req, res) {
          const permission = await Permission.getPermission();
-         console.log('permission=>   : ',permission)
+        //  console.log('permission=>   : ',permission)
         if (permission) {
             res.status(200).json(permission);
         } else {
@@ -20,7 +20,7 @@ module.exports = function (app) {
     router.get('/:id', async function (req, res) {
         const permissionId = req.params.id;
         const permission = await Permission.getPermissionById(permissionId);
-        console.log(permission)
+        // console.log(permission)
         if (permission) {
             res.status(200).json(permission );
         } else {
@@ -47,7 +47,7 @@ module.exports = function (app) {
         const permission = req.body;
         const permissionId = req.params.id;
         const result = await Permission.updatePermission(permissionId, permission);
-        console.log(result)
+        // console.log(result)
         if (result) {
             res.status(200).json(result);
         } else {
@@ -59,7 +59,7 @@ module.exports = function (app) {
     router.delete('/delete/:id', async function (req, res) {
         const permissionId = req.params.id;
         const result = await Permission.deletePermission(permissionId);
-        console.log('result value =>',result)
+        // console.log('result value =>',result)
         if (result) {
             res.status(200).json(result);
         } else {
@@ -72,7 +72,7 @@ module.exports = function (app) {
     router.get('/role/:name',async function (req, res) {
         const roleName = req.params.name;
         const permission = await Permission.getPermissionByRole(roleName);
-        console.log('permission=>   : ',permission)
+        // console.log('permission=>   : ',permission)
        if (permission) {
             res.status(200).json(permission);
         } else {
@@ -86,29 +86,29 @@ module.exports = function (app) {
         const roleId = req.params.roleId;
         const moduleId = req.params.moduleId;
       
-        console.log('roleId:', roleId);
-        console.log('moduleId:', moduleId);
+        // console.log('roleId:', roleId);
+        // console.log('moduleId:', moduleId);
       
         try {
          
           const permission = await Permission.getPermissionByRoleIdAndModuleId(roleId, moduleId);
-            console.log('permission=>   : ',permission) 
+            // console.log('permission=>   : ',permission) 
           if (permission) {
             res.status(200).json(permission);
           } else {
             res.status(404).json({ errors: "No permission found for this role and module combination" });
           }
         } catch (error) {
-          console.error(error);
+        //   console.error(error);
           res.status(500).json({ errors: "Internal server error" }); 
         }
       });
     
       router.get('/roles/:id', async function(req, res) {
         const roleId = req.params.id;
-        console.log('roleId:', roleId);
+        // console.log('roleId:', roleId);
         const permission = await Permission.getPermissionByRoleId(roleId);
-         console.log('permission=>  : ',permission)
+        //  console.log('permission=>  : ',permission)
         if (permission) {
             res.status(200).json(permission);
         } else {

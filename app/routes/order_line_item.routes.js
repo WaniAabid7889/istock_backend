@@ -48,7 +48,7 @@ module.exports = function (app) {
         const LineItemData = req.body;
         const Id = req.params.id;
         const result = await OrderLineItem.updateOrderLineItem(Id, LineItemData);
-        console.log('result: ', result);
+        // console.log('result: ', result);
         if (result) {
             res.status(200).json(result);
         } else {
@@ -60,7 +60,7 @@ module.exports = function (app) {
     router.put('/updateQuantity/:id', async (req, res) => {
         const LineItemData = req.body;
         const id = req.params.id;
-        console.log(id,'  ',LineItemData);
+        // console.log(id,'  ',LineItemData);
         const result = await OrderLineItem.updateOrderLineItemQuantity(id,LineItemData);
         if(result){
             res.status(200).json(result);

@@ -218,9 +218,45 @@ async function getDayWiseIssuedEmployees(product, month, day) {
   }
 }
 
+
+async function lowStockReport(month) {
+  try {
+    if (!month || !/^\d{4}-\d{2}$/.test(month)) {
+      return res.status(400).json({ error: 'Invalid month format. Use YYYY-MM' });
+    }
+
+    const [year, mon] = month.split('-');
+    const startDate = `${year}-${mon}-01`;
+    const endDate = `${year}-${mon}-30`;
+
+    // console.log('startDate =>', startDate);
+    // console.log('endDate =>', endDate);
+    let response = await connection.query(`
+       SELECT 
+          id, 
+          name,
+          total_buy_quantity,
+          total_issue_quantity,
+          (total_buy_quantity - total_issue_quantity) AS current_stock,
+          min_quantity,
+          created_at
+        FROM products
+        WHERE created_at BETWEEN $1 AND $2
+          AND (total_buy_quantity - total_issue_quantity) <= min_quantity
+        ORDER BY created_at ASC  
+    `, [startDate, endDate]);
+
+    return response;
+
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   InventoryReport,
   getIssuedProdQuantityMonthly,
   getIssuedProdQuantityYearly,
-  getDayWiseIssuedEmployees
+  getDayWiseIssuedEmployees,
+  lowStockReport
 };
