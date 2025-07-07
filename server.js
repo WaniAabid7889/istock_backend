@@ -35,6 +35,9 @@ require('./app/routes/module.routes.js')(app);
 require('./app/routes/return.routes.js')(app);
 require('./app/routes/employee.router.js')(app);
 require('./app/routes/reports.router.js')(app);
+require('./app/routes/assets.router.js')(app);
+require('./app/routes/assets_type.router.js')(app);
+require('./app/routes/location.router.js')(app);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
